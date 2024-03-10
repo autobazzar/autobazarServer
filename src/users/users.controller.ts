@@ -1,15 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, LoginUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
+  }
+
+  @Post('login')
+  async logInUser(@Body() user: LoginUserDto, @Res() res: Response) {
+
+    const result = await this.usersService.loginUser(user);
+
+    if (result) {
+      res.status(HttpStatus.OK).send(result);
+    } else {
+      res.status(HttpStatus.BAD_REQUEST).send({ 'error': 'user not found!' });
+    }
+  }
+
+  @Post('/sign-up')
+  async createUser(@Body() userToCreate: CreateUserDto) {
+    await this.usersService.create(userToCreate);
+    return true;
   }
 
   @Patch(':id')
