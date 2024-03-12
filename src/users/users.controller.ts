@@ -24,11 +24,11 @@ export class UsersController {
       res.status(HttpStatus.BAD_REQUEST).send({ 'error': 'user not found!' });
     }
   }
-  @Post('/login-google')
+  @Post('login-google')
   async logInUserGoogle(@Body() user: LoginWithGoogleDto, @Res() res: Response) {
-
+    
     const result = await this.usersService.loginUser(user, true);
-
+    
     if (result) {
       res.status(HttpStatus.OK).send(result);
     } else {
