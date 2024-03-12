@@ -20,7 +20,7 @@ export class LoginUserDto {
     email: string;
 }
 
-export class loginWithGoogleDto {
+export class LoginWithGoogleDto {
     @IsEmail()
     email: string;
 }

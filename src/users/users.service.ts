@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto, LoginUserDto } from './dto/create-user.dto';
+import { CreateUserDto, LoginUserDto, LoginWithGoogleDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DataSource } from 'typeorm';
 import { hash, compare } from 'bcrypt';
@@ -19,12 +19,13 @@ export class UsersService {
 
       return true;
     } catch (e) {
-   
+
       throw e;
     }
   }
 
-  async loginUser(user: LoginUserDto) {
+  async loginUser(user: LoginUserDto | LoginWithGoogleDto, fromGoogle = false) {
+    //@ts-ignore
     const { password, email } = user;
     const findUser = await this.dataSource.manager.findOne(User, {
       where: {
@@ -32,11 +33,15 @@ export class UsersService {
       }
     })
 
-    if (findUser && await compare(password, findUser.password)) {
-      const { password, ...rest } = findUser;
-      return rest;
+    if (findUser && (fromGoogle || await compare(password, findUser.password))) {
+      return this.getProfile(findUser);
     }
     return null;
+  }
+
+  async getProfile(findUser: User) {
+    const { password, ...rest } = findUser;
+    return rest;
   }
 
   findAll() {

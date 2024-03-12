@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, LoginUserDto } from './dto/create-user.dto';
+import { CreateUserDto, LoginUserDto, LoginWithGoogleDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 
@@ -17,6 +17,17 @@ export class UsersController {
   async logInUser(@Body() user: LoginUserDto, @Res() res: Response) {
 
     const result = await this.usersService.loginUser(user);
+
+    if (result) {
+      res.status(HttpStatus.OK).send(result);
+    } else {
+      res.status(HttpStatus.BAD_REQUEST).send({ 'error': 'user not found!' });
+    }
+  }
+  @Post('/login-google')
+  async logInUserGoogle(@Body() user: LoginWithGoogleDto, @Res() res: Response) {
+
+    const result = await this.usersService.loginUser(user, true);
 
     if (result) {
       res.status(HttpStatus.OK).send(result);
