@@ -11,6 +11,14 @@ export class CreateUserDto {
     email: string;
 }
 
+export class CreateUserGoogleDto {
+    @IsNotEmpty()
+    userName: string;
+
+    @IsEmail()
+    email: string;
+}
+
 
 export class LoginUserDto {
     @IsNotEmpty()

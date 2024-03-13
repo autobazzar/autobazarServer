@@ -6,13 +6,14 @@ import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export class User {
     @BeforeInsert()
     async hashPassword() {
-        this.password = await hash(this.password, SALT_ROUNDS);
+        if (this.password)
+            this.password = await hash(this.password, SALT_ROUNDS);
     }
 
     @PrimaryGeneratedColumn()
     user_id: number;
 
-    @Column({ type: 'varchar', length: 256 })
+    @Column({ type: 'varchar', length: 256, nullable: true })
     password: string;
 
     @Column({ type: 'varchar', length: 64 })

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, LoginUserDto, LoginWithGoogleDto } from './dto/create-user.dto';
+import { CreateUserDto, CreateUserGoogleDto, LoginUserDto, LoginWithGoogleDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 
@@ -26,9 +26,9 @@ export class UsersController {
   }
   @Post('login-google')
   async logInUserGoogle(@Body() user: LoginWithGoogleDto, @Res() res: Response) {
-    
+
     const result = await this.usersService.loginUser(user, true);
-    
+
     if (result) {
       res.status(HttpStatus.OK).send(result);
     } else {
@@ -38,8 +38,13 @@ export class UsersController {
 
   @Post('/sign-up')
   async createUser(@Body() userToCreate: CreateUserDto) {
-    await this.usersService.create(userToCreate);
-    return true;
+    return await this.usersService.create(userToCreate);
+  }
+
+
+  @Post('/sign-up-google')
+  async createUserGoogle(@Body() userToCreate: CreateUserGoogleDto) {
+    return await this.usersService.create(userToCreate);
   }
 
   @Patch(':id')
