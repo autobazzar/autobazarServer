@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto, LoginUserDto, LoginWithGoogleDto } from './dto/create-user.dto';
+import { CreateUserDto, LoginUserDto, } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DataSource } from 'typeorm';
 import { compare } from 'bcrypt';
@@ -15,7 +15,7 @@ export class UsersService {
     return this.getProfile(newUser);
   }
 
-  async loginUser(user: LoginUserDto | LoginWithGoogleDto, fromGoogle = false) {
+  async loginUser(user: LoginUserDto, fromGoogle = false) {
     //@ts-ignore
     const { password, email } = user;
     const findUser = await this.dataSource.manager.findOne(User, {
