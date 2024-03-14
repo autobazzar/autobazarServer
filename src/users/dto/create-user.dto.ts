@@ -1,13 +1,15 @@
 import { IsEmail, IsNotEmpty, IsOptional, ValidateIf } from "class-validator";
+import { error } from "console";
 
 export class CreateUserDto {
-    isFromGoogle:boolean;
+    isFromGoogle: boolean;
 
-    @ValidateIf(object=>object.isForGoogle)
+    @ValidateIf((object,) => {
+        return !object.isFromGoogle
+    })
     @IsNotEmpty()
     password: string;
 
-    @ValidateIf(object=>object.isForGoogle)
     @IsNotEmpty()
     userName: string;
 
