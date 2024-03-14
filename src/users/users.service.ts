@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto,CreateUserGoogleDto, LoginUserDto, LoginWithGoogleDto } from './dto/create-user.dto';
+import { CreateUserDto, LoginUserDto, } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DataSource } from 'typeorm';
 import { compare } from 'bcrypt';
@@ -9,18 +9,13 @@ import { JwtService } from '@nestjs/jwt';
 export class UsersService {
   constructor(private dataSource: DataSource, private jwtService: JwtService) { }
 
-  async create(user: CreateUserDto | CreateUserGoogleDto) {
-    try {
-      const newUser = this.dataSource.manager.create(User, user);
-      await this.dataSource.manager.save(newUser);
-      return this.getProfile(newUser);
-    } catch (e) {
-      
-      throw e;
-    }
+  async create(user: CreateUserDto) {
+    const newUser = this.dataSource.manager.create(User, user);
+    await this.dataSource.manager.save(newUser);
+    return this.getProfile(newUser);
   }
 
-  async loginUser(user: LoginUserDto | LoginWithGoogleDto, fromGoogle = false) {
+  async loginUser(user: LoginUserDto, fromGoogle = false) {
     //@ts-ignore
     const { password, email } = user;
     const findUser = await this.dataSource.manager.findOne(User, {

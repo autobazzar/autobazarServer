@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto, CreateUserGoogleDto, LoginUserDto, LoginWithGoogleDto } from './dto/create-user.dto';
+import { CreateUserDto, LoginUserDto, } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
 
@@ -14,20 +14,9 @@ export class UsersController {
   }
 
   @Post('login')
-  async logInUser(@Body() user: LoginUserDto, @Res() res: Response) {
-
-    const result = await this.usersService.loginUser(user);
-
-    if (result) {
-      res.status(HttpStatus.OK).send(result);
-    } else {
-      res.status(HttpStatus.BAD_REQUEST).send({ 'error': 'user not found!' });
-    }
-  }
-  @Post('login-google')
-  async logInUserGoogle(@Body() user: LoginWithGoogleDto, @Res() res: Response) {
-
-    const result = await this.usersService.loginUser(user, true);
+  async logInUser(@Body() requestBody: LoginUserDto, @Res() res: Response) {
+    const { isFromGoogle, ...user } = requestBody;
+    const result = await this.usersService.loginUser(user, isFromGoogle);
 
     if (result) {
       res.status(HttpStatus.OK).send(result);
@@ -37,14 +26,13 @@ export class UsersController {
   }
 
   @Post('/sign-up')
-  async createUser(@Body() userToCreate: CreateUserDto) {
-    return await this.usersService.create(userToCreate);
-  }
-
-
-  @Post('/sign-up-google')
-  async createUserGoogle(@Body() userToCreate: CreateUserGoogleDto) {
-    return await this.usersService.create(userToCreate);
+  async createUser(@Body() userToCreate: CreateUserDto, @Res() res: Response) {
+    try {
+      const result = await this.usersService.create(userToCreate);
+      res.status(HttpStatus.OK).send(result);
+    } catch (e) {
+      res.status(HttpStatus.BAD_REQUEST).send({ 'message': 'a user already exists with the email!' });
+    }
   }
 
   @Patch(':id')
