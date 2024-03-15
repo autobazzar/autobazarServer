@@ -21,7 +21,7 @@ export class UsersController {
     if (result) {
       res.status(HttpStatus.OK).send(result);
     } else {
-      res.status(HttpStatus.BAD_REQUEST).send({ 'error': 'user not found!' });
+      res.status(HttpStatus.BAD_REQUEST).send({ 'message': 'user not found!' });
     }
   }
 
