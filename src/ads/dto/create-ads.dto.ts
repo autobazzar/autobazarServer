@@ -27,7 +27,7 @@ export class CreateAdDto {
   price: number; // Price of the ad
 
   @IsNotEmpty()
-  date: Date; // Date of the ad
+  date: string; // Date of the ad
 
   @IsNumber() @IsInt()
   year: number; // Year of the car in the ad
@@ -84,7 +84,7 @@ export class UpdateAdDto {
   price: number; // Price of the ad
 
   @IsNotEmpty()
-  date: Date; // Date of the ad
+  date: string; // Date of the ad
 
   @IsNumber() @IsInt()
   year: number; // Year of the car in the ad
@@ -107,9 +107,11 @@ export class UpdateAdDto {
   @IsNumber() @IsInt()
   distance?: number; // Distance of the car in the ad
 
+  @IsNumber() @IsNotEmpty()
+  userId: number; // ID of the user associated with the ad
+  
   @IsBoolean()
   accidental?: boolean; // Indicates if the car has been in an accident
 
-  @IsNumber() @IsNotEmpty()
-  userId: number; // ID of the user associated with the ad
+
 }
