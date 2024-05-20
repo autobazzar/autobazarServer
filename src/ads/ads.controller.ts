@@ -6,10 +6,12 @@ import { CreateAdDto, UpdateAdDto } from './dto/create-ads.dto';
 import { Response } from 'express';
 
 
+
 @ApiTags('ads') // Tagging the controller with 'ads' for Swagger documentation
 @Controller('ads') // Controller responsible for handling requests related to ads
 export class AdsController {
   constructor(private readonly adsService: AdsService) {} // Injecting the AdsService
+
 
   // GET request to find an ad by its ID
   @ApiOperation({ summary: 'Find ad by ID' })
@@ -19,6 +21,17 @@ export class AdsController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.adsService.findOne(+id); // Calling the service method to find an ad by ID
+  }
+
+
+  // GET request to find an ad by its ID
+  @ApiOperation({ summary: 'All ads' })
+  
+  @ApiResponse({ status: 200, description: 'Found ads', type: CreateAdDto })
+  @ApiResponse({ status: 404, description: 'Not available ads' })
+  @Get('')
+  findAll() {
+    return this.adsService.findAll(); 
   }
 
   
@@ -33,28 +46,28 @@ export class AdsController {
     return this.adsService.findByUserId(+userId); // Calling the service method to find ads by user ID
   }
 
+  
+
 // POST request to create a new ad
 @ApiOperation({ summary: 'Create a new ad' })
 @ApiBody({ type: CreateAdDto })
 @ApiResponse({ status: 201, description: 'Ad created successfully', type: CreateAdDto })
 @ApiResponse({ status: 400, description: 'Failed to create ad' })
 @Post()
-@UseInterceptors(FilesInterceptor('pictures', 10), FilesInterceptor('videos', 5)) // Handle file uploads for pictures and videos
+//@UseInterceptors(FilesInterceptor('pictures', 10), FilesInterceptor('videos', 5)) // Handle file uploads for pictures and videos
 async create(
-  @Body() createAdDto: CreateAdDto,
- // @UploadedFiles() files: { pictures: Express.Multer.File[], videos: Express.Multer.File[] }, // Uploaded files (pictures and videos)
+  @Body() createAdDtoPram: CreateAdDto,
+
   @Res() res: Response
 ) {
   try {
-    // Extract picture and video URLs from uploaded files
-    //const pictures = files.pictures.map(file => file.path);
-    //const videos = files.videos.map(file => file.path);
 
-    // Create the ad with picture and video URLs
-   // const result = await this.adsService.create(createAdDto, pictures, videos);
+    
+    const result = await this.adsService.create(createAdDtoPram);
+    res.status(HttpStatus.OK).send(result);
 
-   // res.status(HttpStatus.CREATED).send(result); // Sending success response with the created ad
   } catch (e) {
+    
     res.status(HttpStatus.BAD_REQUEST).send({ message: 'Failed to create ad' }); // Sending error response if creation fails
   }
 }

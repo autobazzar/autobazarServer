@@ -17,7 +17,7 @@ import { RatesModule } from './rates/rates.module';
         type: 'sqlite',
         database: 'db/sql',
         synchronize: true,
-        entities: [User],
+        entities: [User,Ad],
         logging: true,
         logger: 'file',
       }
