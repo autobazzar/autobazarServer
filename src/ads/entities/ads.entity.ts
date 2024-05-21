@@ -15,7 +15,7 @@ export class Ad {
   address: string;
 
   // Column for mobile number
-  @Column({ name: 'mobile_num', type: 'varchar', length: 15, nullable: false, unique: true })
+  @Column({ name: 'mobile_num', type: 'varchar', length: 15, nullable: false})
   mobileNum: string;
 
   // Column for city
@@ -39,8 +39,8 @@ export class Ad {
   price: number;
 
   // Column for date
-  @Column({ name: 'date', type: 'timestamp', nullable: false })
-  date: Date;
+  @Column({ name: 'date',  type: 'varchar', length: 512, nullable: false })
+  date: string;
 
   // Column for year
   @Column({ name: 'year', type: 'integer', nullable: false })
@@ -73,9 +73,16 @@ export class Ad {
   // Column for accidental
   @Column({ name: 'accidental', type: 'boolean', default: false })
   accidental: boolean;
+
+  // Column for user id
+  @Column({ name: 'user_id', type: 'integer', nullable: false })
+  userId: number;
+
+
+  /*
   @ManyToOne(() => User)
   // Joining on user_id column
   @JoinColumn({ name: 'user_id' }) 
   user: User;
-
+*/
 }
