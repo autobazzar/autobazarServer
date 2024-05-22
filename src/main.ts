@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: false });
   const options = new DocumentBuilder()
     .setTitle('AutoBazaar API ')
     .setDescription('AutoBazaar API doc')
@@ -13,12 +13,12 @@ async function bootstrap() {
     .addTag('Auto API Tag')
     .build();
 
-const document = SwaggerModule.createDocument(app, options);
+  const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
 
-await app.listen(process.env.PORT || 3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
-	
+
 
 
