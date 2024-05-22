@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { Rate } from './entities/rate.entity';
 import { CreateRateDto } from './dto/create-rate.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';

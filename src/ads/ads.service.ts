@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, FindManyOptions,DataSource } from 'typeorm'; // Importing necessary modules
+import { Repository,DataSource } from 'typeorm'; // Importing necessary modules
 import { Ad } from './entities/ads.entity'; // Importing the Ad entity
 import { CreateAdDto } from './dto/create-ads.dto'; // Importing the CreateAdDto
 
