@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: false });
+  const app = await NestFactory.create(AppModule, { cors: true });
   const options = new DocumentBuilder()
     .setTitle('AutoBazaar API ')
     .setDescription('AutoBazaar API doc')

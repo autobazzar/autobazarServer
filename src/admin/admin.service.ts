@@ -5,6 +5,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Ad } from '../ads/entities/ads.entity';
 import { User } from '../users/entities/user.entity';
 import { Rate } from '../rates/entities/rate.entity';
+import { getTodayDate } from 'src/utils/dateService';
 
 @Injectable()
 @ApiTags('Admin')
@@ -37,11 +38,11 @@ export class AdminService {
   }
 
   // Function to get ads for today
-  async getTodayAds(date: string): Promise<Ad[]> {
+  async getTodayAds(): Promise<Ad[]> {
     try {
       return await this.adRepository.find({
         where: {
-          date: date,
+          date: getTodayDate(),
         },
       });
     } catch (error) {
