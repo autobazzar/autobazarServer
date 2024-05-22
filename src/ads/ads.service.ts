@@ -53,19 +53,25 @@ export class AdsService {
   async update(id: number, adDto: CreateAdDto) {
     const existingAd = await this.findOne(id); // Finding the existing ad by ID
     const updatedAd = { ...existingAd, ...adDto }; // Merging the existing ad with the updated data
-    //return this.adRepository.save(updatedAd); // Saving the updated ad to the database
+    return this.dataSource.manager.save(updatedAd); // Saving the updated ad to the database
   }
 
   // Method to remove an ad
   async remove(id: number): Promise<void> {
-    await this.adRepository.delete(id); // Deleting the ad from the database
+    try {
+      const ad = await this.findOne(id); // Reusing findOne method to check if the ad exists
+      await this.dataSource.manager.remove(Ad, ad); // Removing the ad using the data source manager
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException('Ad not found');
+      } 
+    }
   }
-
   // Method to change the status of an ad
   async changeStatus(id: number, status: number): Promise<void> {
     const ad = await this.findOne(id); // Finding the ad by ID
     ad.status = status; // Changing the status of the ad
-    await this.adRepository.save(ad); // Saving the updated ad to the database
+    await this.dataSource.manager.save(ad); // Saving the updated ad to the database
   }
 
    
