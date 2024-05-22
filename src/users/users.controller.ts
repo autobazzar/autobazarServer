@@ -20,7 +20,7 @@ export class UsersController {
         summary: 'Example request body for login',
         value: {
           email: 'user@example.com',
-          password: 'password123'
+          password: 'example password'
         }
       }
     },
@@ -61,7 +61,7 @@ export class UsersController {
         value: {
           userName: 'exampleuser',
           email: 'user@example.com',
-          password: 'password123'
+          password: 'example password'
         }
       }
     },
