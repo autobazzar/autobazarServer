@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto, LoginUserDto, } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
+import { ApiBody, ApiResponse } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -12,7 +13,34 @@ export class UsersController {
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
-
+  @ApiBody({
+    type: LoginUserDto,
+    examples: {
+      example1: {
+        summary: 'Example request body for login',
+        value: {
+          email: 'user@example.com'
+        }
+      }
+    },
+    schema: {
+      properties: {
+        email: {
+          type: 'string',
+          format: 'email',
+          description: 'User email address'
+        },
+        password: {
+          type: 'string',
+          description: 'User password'
+        }
+      },
+      required: ['email', 'password']
+    }
+  })
+  @ApiResponse({ status: 200, description: 'User logged in', schema: { example: 'JWT token' } })
+  @ApiResponse({ status: 400, description: 'User not found', schema: { example: { message: 'user not found!' } } })
+  
   @Post('login')
   async logInUser(@Body() requestBody: LoginUserDto, @Res() res: Response) {
     const { isFromGoogle, ...user } = requestBody;
@@ -24,7 +52,37 @@ export class UsersController {
       res.status(HttpStatus.BAD_REQUEST).send({ 'message': 'user not found!' });
     }
   }
-
+  @ApiBody({
+    type: CreateUserDto,
+    examples: {
+      example1: {
+        summary: 'Example request body for sign-up',
+        value: {
+          userName: 'exampleuser'
+        }
+      }
+    },
+    schema: {
+      properties: {
+        userName: {
+          type: 'string',
+          description: 'User name'
+        },
+        email: {
+          type: 'string',
+          format: 'email',
+          description: 'User email address'
+        },
+        password: {
+          type: 'string',
+          description: 'User password'
+        }
+      },
+      required: ['userName', 'email', 'password']
+    }
+  })
+  @ApiResponse({ status: 200, description: 'User created', schema: { example: 'User details' } })
+  @ApiResponse({ status: 400, description: 'User already exists', schema: { example: { message: 'a user already exists with the email!' } } })
   @Post('/sign-up')
   async createUser(@Body() userToCreate: CreateUserDto, @Res() res: Response) {
     try {

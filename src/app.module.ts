@@ -9,6 +9,7 @@ import { Rate } from './rates/entities/rate.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AdsModule } from './ads/ads.module';
 import { RatesModule } from './rates/rates.module';
+import { AdminModule } from './admin/admin.module';
 @Module({
   imports: [
   
@@ -17,7 +18,7 @@ import { RatesModule } from './rates/rates.module';
         type: 'sqlite',
         database: 'db/sql',
         synchronize: true,
-        entities: [User,Ad],
+        entities: [User,Ad,Rate],
         logging: true,
         logger: 'file',
       }
@@ -26,7 +27,7 @@ import { RatesModule } from './rates/rates.module';
       secret: 'secretKey',
       signOptions: { expiresIn: '7d' }
     })
-    , UsersModule,AdsModule,RatesModule ],
+    , UsersModule,AdsModule,RatesModule,AdminModule ],
   controllers: [AppController],
   providers: [AppService],
 })

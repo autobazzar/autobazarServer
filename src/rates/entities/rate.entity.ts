@@ -1,6 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Ad } from '../../ads/entities/ads.entity'; // Importing Ad entity
-import { User } from '../../users/entities/user.entity'; // Importing User entity
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
 
 @Entity({ name: 'rates' }) // Define the entity name
 export class Rate {
@@ -10,11 +9,9 @@ export class Rate {
   @Column({ name: 'score', type: 'integer', nullable: false }) // Define column for score, not nullable
   score: number;
 
-  @ManyToOne(() => User, { eager: true }) // Define many-to-one relationship with User entity
-  @JoinColumn({ name: 'user_id' }) // Join on user_id column
-  user: User;
+  @Column({ name: 'user_id', type: 'integer', nullable: false }) // Define column for score, not nullable
+  userId: number;
 
-  @ManyToOne(() => Ad, { eager: true }) // Define many-to-one relationship with Ad entity
-  @JoinColumn({ name: 'ad_id' }) // Join on ad_id column
-  ad: Ad;
+  @Column({ name: 'ad_id', type: 'integer', nullable: false }) // Define column for score, not nullable
+  adId: number;
 }
