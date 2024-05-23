@@ -38,6 +38,9 @@ export class AdsController {
         color: "قرمز",
         distance: 50000,
         accidental: false,
+        insurance:2,
+        motor:"توربو",
+        fuel:"گازسوز",
         userId: 123
       }
     }
@@ -76,6 +79,9 @@ export class AdsController {
           "color": "قرمز",
           "distance": 50000,
           "accidental": false,
+          "insurance":2,
+          "motor":"توربو",
+          "fuel":"گازسوز",
           "userId": 123
         },
         {
@@ -97,6 +103,9 @@ export class AdsController {
           "color": "قرمز",
           "distance": 50000,
           "accidental": false,
+          "insurance":2,
+          "motor":"توربو",
+          "fuel":"گازسوز",
           "userId": 123
         },
         {
@@ -118,6 +127,9 @@ export class AdsController {
           "color": "آبی",
           "distance": 30000,
           "accidental": false,
+          "insurance":2,
+          "motor":"توربو",
+          "fuel":"گازسوز",
           "userId": 456
         }
       ]
@@ -158,6 +170,9 @@ export class AdsController {
           color: "قرمز",
           distance: 50000,
           accidental: false,
+          insurance:2,
+          motor:"توربو",
+          fuel:"گازسوز",
           userId: 123
         },
         {
@@ -179,6 +194,9 @@ export class AdsController {
           "color": "قرمز",
           "distance": 50000,
           "accidental": false,
+          "insurance":2,
+          "motor":"توربو",
+          "fuel":"گازسوز",
           "userId": 123
         }
       ]
@@ -215,6 +233,9 @@ export class AdsController {
           color: "آبی",
           distance: 20000,
           accidental: false,
+          insurance:2,
+          motor:"توربو",
+          fuel:"گازسوز",
           userId: 456
         }
       }

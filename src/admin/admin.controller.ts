@@ -1,12 +1,12 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiResponse } from '@nestjs/swagger';
 import { Ad } from '../ads/entities/ads.entity';
 import { User } from '../users/entities/user.entity';
 @ApiTags('Admin')
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) { }
 
   @ApiResponse({
     status: 200,
@@ -37,10 +37,10 @@ export class AdminController {
     description: 'Ads for today retrieved successfully',
     type: [Ad]
   })
-  @ApiParam({ name: 'date', description: 'Date in format yyyy-MM-dd' })
-  @Get('today-ads/:date')
-  async getTodayAds(@Param('date') date: string) {
-    return this.adminService.getTodayAds(date);
+
+  @Get('today-ads')
+  async getTodayAds() {
+    return (await this.adminService.getTodayAds()).length;
   }
 
   @ApiResponse({

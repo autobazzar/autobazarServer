@@ -1,6 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Ad } from '../../ads/entities/ads.entity'; // Importing Ad entity
-import { User } from '../../users/entities/user.entity'; // Importing User entity
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
 
 @Entity({ name: 'rates' }) // Define the entity name
 export class Rate {
