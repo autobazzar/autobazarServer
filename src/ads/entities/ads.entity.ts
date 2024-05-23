@@ -74,15 +74,23 @@ export class Ad {
   @Column({ name: 'accidental', type: 'boolean', default: false })
   accidental: boolean;
 
+  // Column for motor
+  @Column({ name: 'motor', type: 'varchar', length: 512 })
+  motor: string;
+
+  // Column for insurance time 
+  @Column({ name: 'insurance', type: 'integer' })
+  insurance:string;
+
+
+ // Column for fuel
+ @Column({ name: 'fuel', type: 'varchar', length: 512 })
+ fuel: string;
+
   // Column for user id
   @Column({ name: 'user_id', type: 'integer', nullable: false })
   userId: number;
 
 
-  /*
-  @ManyToOne(() => User)
-  // Joining on user_id column
-  @JoinColumn({ name: 'user_id' }) 
-  user: User;
-*/
+
 }
