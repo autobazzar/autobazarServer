@@ -1,5 +1,5 @@
 import { ApiTags, ApiParam, ApiResponse, ApiBody, ApiOperation, ApiExtraModels, getSchemaPath } from '@nestjs/swagger';
-import { Controller, Get, Post, Body, Param, Patch, Delete, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Res, HttpStatus, NotFoundException } from '@nestjs/common';
 import { AdsService } from './ads.service';
 import { CreateAdDto, UpdateAdDto } from './dto/create-ads.dto';
 import { Response } from 'express';
@@ -208,53 +208,92 @@ export class AdsController {
     return this.adsService.findByUserId(+userId); // Calling the service method to find ads by user ID
   }
 
-  // POST request to create a new ad
-  @ApiOperation({ summary: 'Create a new ad' })
-  @ApiBody({
-    type: CreateAdDto,
-    examples: {
-      newAd: {
-        summary: 'Example of a new ad',
-        value: {
-          technicalInfo: "اطلاعات فنی جدید درباره آگهی.",
-          address: "خیابان جدید 123",
-          mobileNum: "123-456-7890",
-          city: "شهر جدید",
-          carName: "هوندا سیویک",
-          picsUrl: "http://example.com/newpic.jpg",
-          additionalInfo: "اطلاعات اضافی جدید درباره آگهی.",
-          price: 12000,
-          date: "2024-06-17",
-          year: 2023,
-          status: 1,
-          model: "مدل جدید",
-          videoUrl: "http://example.com/newvideo.mp4",
-          brand: "برند جدید",
-          color: "آبی",
-          distance: 20000,
-          accidental: false,
-          insurance:2,
-          motor:"توربو",
-          fuel:"گازسوز",
-          userId: 456
-        }
-      }
-    }
-  })
-  @ApiResponse({ status: 201, description: 'Ad created successfully', type: CreateAdDto })
-  @ApiResponse({ status: 400, description: 'Failed to create ad' })
-  @Post()
-  async create(
-    @Body() createAdDtoPram: CreateAdDto,
-    @Res() res: Response
-  ) {
-    try {
-      const result = await this.adsService.create(createAdDtoPram);
-      res.status(HttpStatus.OK).send(result);
-    } catch (e) {
-      res.status(HttpStatus.BAD_REQUEST).send({ message: 'Failed to create ad' }); // Sending error response if creation fails
-    }
-  }
+ // POST request to create a new ad
+ @ApiOperation({ summary: 'Create a new ad' })
+ @ApiBody({
+   type: CreateAdDto,
+   examples: {
+     newAd: {
+       summary: 'Example of a new ad',
+       value: {
+         technicalInfo: "اطلاعات فنی جدید درباره آگهی.",
+         address: "خیابان جدید 123",
+         mobileNum: "123-456-7890",
+         city: "شهر جدید",
+         carName: "هوندا سیویک",
+         picsUrl: "http://example.com/newpic.jpg",
+         additionalInfo: "اطلاعات اضافی جدید درباره آگهی.",
+         price: 12000,
+         date: "2024-06-17",
+         year: 2023,
+         status: 1,
+         model: "مدل جدید",
+         videoUrl: "http://example.com/newvideo.mp4",
+         brand: "برند جدید",
+         color: "آبی",
+         distance: 20000,
+         accidental: false,
+         insurance: 2,
+         motor: "توربو",
+         fuel: "گازسوز",
+         userId: 456
+       }
+     }
+   }
+ })
+ @ApiResponse({
+   status: 201,
+   description: 'Ad created successfully',
+   schema: {
+     example: {
+       id: 1,
+       technicalInfo: "اطلاعات فنی جدید درباره آگهی.",
+       address: "خیابان جدید 123",
+       mobileNum: "123-456-7890",
+       city: "شهر جدید",
+       carName: "هوندا سیویک",
+       picsUrl: "http://example.com/newpic.jpg",
+       additionalInfo: "اطلاعات اضافی جدید درباره آگهی.",
+       price: 12000,
+       date: "2024-06-17",
+       year: 2023,
+       status: 1,
+       model: "مدل جدید",
+       videoUrl: "http://example.com/newvideo.mp4",
+       brand: "برند جدید",
+       color: "آبی",
+       distance: 20000,
+       accidental: false,
+       insurance: 2,
+       motor: "توربو",
+       fuel: "گازسوز",
+       userId: 456
+     }
+   }
+ })
+ @ApiResponse({
+   status: 400,
+   description: 'User not found or failed to create ad',
+   schema: {
+     example: {
+       statusCode: 400,
+       message: 'User does not exist'
+     }
+   }
+ })
+ @Post()
+ async create(@Body() createAdDtoPram: CreateAdDto, @Res() res: Response) {
+   try {
+     const result = await this.adsService.create(createAdDtoPram);
+     res.status(HttpStatus.CREATED).send(result);
+   } catch (e) {
+     if (e instanceof NotFoundException) {
+       res.status(HttpStatus.BAD_REQUEST).send({ message: 'User does not exist' });
+     } else {
+       res.status(HttpStatus.BAD_REQUEST).send({ message: 'Failed to create ad' });
+     }
+   }
+ }
 
   // PATCH request to update an existing ad
   @ApiOperation({ summary: 'Update an existing ad' })

@@ -1,8 +1,8 @@
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, HttpStatus, Res, BadRequestException, NotFoundException, ConflictException } from '@nestjs/common';
 import { RatesService } from './rates.service';
 import { CreateRateDto } from './dto/create-rate.dto';
 import { ApiTags, ApiBody, ApiResponse, ApiParam, ApiOperation } from '@nestjs/swagger';
-
+import { Response } from 'express';
 @ApiTags('Rates') // Adding Swagger tags for the controller
 @Controller('rates')
 export class RatesController {
@@ -67,10 +67,46 @@ export class RatesController {
       }
     }
   })
+  @ApiResponse({
+    status: 404,
+    description: 'User or Ad not found',
+    schema: {
+      example: {
+        statusCode: 404,
+        message: "User not found",
+        error: "Not Found"
+      }
+    }
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Rate already exists for this user and ad',
+    schema: {
+      example: {
+        statusCode: 409,
+        message: "Rate already exists for this user and ad",
+        error: "Conflict"
+      }
+    }
+  })
   @Post()
-  async create(@Body() createRateDto: CreateRateDto) {
-    return this.ratesService.create(createRateDto);
+  async create(@Body() createRateDto: CreateRateDto, @Res() res: Response) {
+    try {
+      const result = await this.ratesService.create(createRateDto);
+      res.status(HttpStatus.CREATED).send(result);
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        res.status(HttpStatus.BAD_REQUEST).send({ message: error.message });
+      } else if (error instanceof NotFoundException) {
+        res.status(HttpStatus.NOT_FOUND).send({ message: error.message });
+      } else if (error instanceof ConflictException) {
+        res.status(HttpStatus.CONFLICT).send({ message: error.message });
+      } else {
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ message: 'An unexpected error occurred' });
+      }
+    }
   }
+
 
   // GET request to get the average rate for a specific ad
   @ApiOperation({ summary: 'Get the average rate for a specific ad' })

@@ -101,4 +101,44 @@ export class AdminService {
       throw new BadRequestException('Failed to get ads with average rate');
     }
   }
+
+  async updateUserBannedStatus(id: number, isBanned: boolean): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: {
+        user_id: id 
+      }});
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    // Ensure that isBanned is a boolean value
+    if (typeof isBanned !== 'boolean') {
+      throw new BadRequestException('isBanned must be a boolean value');
+    }
+    user.isBanned = isBanned;
+    return this.userRepository.save(user);
+  }
+
+  async updateUserRole(id: number, role: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: {
+        user_id: id 
+      }});
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    // Additional validation for role, for example, ensuring it is a valid role
+    if (!isValidRole(role)) {
+      throw new BadRequestException('Invalid role');
+    }
+    user.role = role;
+    return this.userRepository.save(user);
+  }
+}
+
+// Example  to validate the role
+function isValidRole(role: string): boolean {
+  // Add your validation logic here, for example:
+  const validRoles = ['admin', 'user', 'moderator'];
+  return validRoles.includes(role);
+
 }
