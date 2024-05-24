@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { json, urlencoded } from 'express';
 
 
 async function bootstrap() {
@@ -12,7 +13,8 @@ async function bootstrap() {
     .addServer('http://localhost:3000/', 'Local environment')
     .addTag('Auto API Tag')
     .build();
-
+    app.use(json({limit:'50mb'}))
+    app.use(urlencoded({ extended: true, limit: '50mb' }));
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api-docs', app, document);
 

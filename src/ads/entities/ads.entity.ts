@@ -27,7 +27,7 @@ export class Ad {
   carName: string;
 
   // Column for pictures URL
-  @Column({ name: 'pics_url', type: 'varchar', length: 512, nullable: false })
+  @Column({ name: 'pics_url', type: 'text',nullable: false })
   picsUrl: string;
 
   // Column for additional information
@@ -55,7 +55,7 @@ export class Ad {
   model: string;
 
   // Column for video URL
-  @Column({ name: 'video_url', type: 'varchar', length: 512, nullable: true })
+  @Column({ name: 'video_url', type: 'text', nullable: true })
   videoUrl: string;
 
   // Column for brand
