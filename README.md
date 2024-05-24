@@ -24,7 +24,10 @@ $ npm run start:prod
 ## Test
 
 ```bash
-# unit tests with html docs
+
+# unit tests with html dpcs
+# Notice! In users.service.spec.ts file put password for testing purpose where it has comment.
+
 $ npm run test:api
 
 # unit tests
