@@ -67,7 +67,7 @@ describe('UsersService', () => {
   describe('create', () => {
     it('should create and return a user profile', async () => {
       mockUserRepository.save.mockResolvedValue(mockUser);
-
+   //put password as password
       const createUserDto: CreateUserDto = {
         email: 'test@test.com',
         password: '',
