@@ -2,17 +2,28 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository,DataSource } from 'typeorm'; // Importing necessary modules
 import { Ad } from './entities/ads.entity'; // Importing the Ad entity
+import { User } from '../users/entities/user.entity';
 import { CreateAdDto } from './dto/create-ads.dto'; // Importing the CreateAdDto
 
 @Injectable()
 export class AdsService {
   constructor(
-    @InjectRepository(Ad)
-    private readonly adRepository: Repository<Ad>, private dataSource: DataSource// Injecting the Ad repository
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private dataSource: DataSource// Injecting the Ad repository
   ) {}
 
   // Method to create a new ad
   async create(adDto: CreateAdDto) {
+    
+    const { userId } = adDto;
+
+    // Check if the user exists
+    const userExists = await this.userRepository.findOne({ where: { user_id: userId } });
+    if (!userExists) {
+      throw new NotFoundException('User does not exist');
+    }
+
     const newAd = this.dataSource.manager.create(Ad,adDto);
     await this.dataSource.manager.save(newAd);
     return "Ad created successfully "; 

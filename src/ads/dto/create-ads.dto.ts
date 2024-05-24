@@ -52,6 +52,15 @@ export class CreateAdDto {
 
   @IsOptional() @IsBoolean()
   accidental?: boolean; // Indicates if the car has been in an accident
+  @IsString()
+  motor?: string; //motor type of car
+
+  @IsInt()
+  insurance?: number; // insurance timing
+
+  @IsString()
+  fuel?: string; // Additional information about fuel
+
 
   @IsNumber() @IsNotEmpty()
   userId: number; // ID of the user associated with the ad

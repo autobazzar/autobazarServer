@@ -1,5 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { User } from '../../users/entities/user.entity'; // Importing User entity from the specified path
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
 
 @Entity({ name: 'ads' }) // Defining the entity with name 'ads'
 export class Ad {
@@ -80,12 +80,12 @@ export class Ad {
 
   // Column for insurance time 
   @Column({ name: 'insurance', type: 'integer' })
-  insurance:string;
+  insurance:number;
 
 
- // Column for fuel
- @Column({ name: 'fuel', type: 'varchar', length: 512 })
- fuel: string;
+  // Column for fuel
+  @Column({ name: 'fuel', type: 'varchar', length: 512 })
+  fuel: string;
 
   // Column for user id
   @Column({ name: 'user_id', type: 'integer', nullable: false })

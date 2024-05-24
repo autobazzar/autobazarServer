@@ -1,6 +1,6 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
 import { AdminService } from './admin.service';
-import { ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { Ad } from '../ads/entities/ads.entity';
 import { User } from '../users/entities/user.entity';
 @ApiTags('Admin')
@@ -61,5 +61,65 @@ export class AdminController {
   @Get('ads-with-average-rate')
   async getAllAdsWithAverageRate() {
     return this.adminService.getAllAdsWithAverageRate();
+  }
+
+  @Patch('user/:id/banned-status')
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiBody({
+    schema: {
+      properties: {
+        isBanned: {
+          type: 'boolean',
+          description: 'The new value for the banned status (true/false)',
+        },
+      },
+      required: ['isBanned'],
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User banned status updated successfully',
+    type: User,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input: isBanned must be a boolean value',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  async updateUserBannedStatus(@Param('id') id: number, @Body() isBanned: { isBanned: boolean }) {
+    return this.adminService.updateUserBannedStatus(id, isBanned.isBanned);
+  }
+
+  @Patch('user/:id/role')
+  @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiBody({
+    schema: {
+      properties: {
+        role: {
+          type: 'string',
+          description: 'The new role for the user it must be admin or user',
+        },
+      },
+      required: ['role'],
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User role updated successfully',
+    type: User,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid input: Invalid role',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'User not found',
+  })
+  async updateUserRole(@Param('id') id: number, @Body() role: { role: string }) {
+    return this.adminService.updateUserRole(id, role.role);
   }
 }

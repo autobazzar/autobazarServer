@@ -22,4 +22,12 @@ export class User {
     @Column({ type: 'varchar', length: 128, unique: true })
     email: string;
 
+    @Column({ name: 'role', type: 'varchar', length: 256, nullable: true })
+    role: string;
+
+
+    @Column({ name: 'isBanned', type: 'boolean', default: false })
+    isBanned: boolean;
+
+
 }

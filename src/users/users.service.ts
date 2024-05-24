@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, LoginUserDto, } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DataSource } from 'typeorm';
@@ -35,12 +35,23 @@ export class UsersService {
     return { token: this.jwtService.sign({ ...rest }, { secret: "secretKey" }) };
   }
 
-  findAll() {
-    return `This action returns all users`;
+ 
+  async findAll() {
+
+    const users = await this.dataSource.manager.find(User ); 
+    if (!users) {
+      throw new NotFoundException('No users found'); 
+    }
+    return users; 
+    
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    const user = await this.dataSource.manager.findOne(User,{ where: { user_id:id} } ); 
+    if (!user) {
+      throw new NotFoundException('User not found'); 
+    }
+    return user; 
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
