@@ -2,14 +2,15 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
+import { AdsModule } from './ads/ads.module';
+import { RatesModule } from './rates/rates.module';
+import { AdminModule } from './admin/admin.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 import { Ad } from './ads/entities/ads.entity';
 import { Rate } from './rates/entities/rate.entity';
 import { JwtModule } from '@nestjs/jwt';
-import { AdsModule } from './ads/ads.module';
-import { RatesModule } from './rates/rates.module';
-import { AdminModule } from './admin/admin.module';
+
 @Module({
   imports: [
   

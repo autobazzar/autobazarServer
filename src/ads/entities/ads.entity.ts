@@ -80,7 +80,7 @@ export class Ad {
 
   // Column for insurance time 
   @Column({ name: 'insurance', type: 'integer' })
-  insurance:string;
+  insurance:number;
 
 
   // Column for fuel
