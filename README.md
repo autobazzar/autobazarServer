@@ -24,6 +24,9 @@ $ npm run start:prod
 ## Test
 
 ```bash
+# unit tests with html docs
+$ npm run test:api
+
 # unit tests
 $ npm run test
 
