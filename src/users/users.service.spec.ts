@@ -13,11 +13,11 @@ describe('UsersService', () => {
   let service: UsersService;
   let dataSource: DataSource;
   let jwtService: JwtService;
-
+    //put password as password
   const mockUser = {
     user_id: 1,
     email: 'test@test.com',
-    password: 'password',
+    password: '',
     name: 'Test User'
   };
 
@@ -70,7 +70,7 @@ describe('UsersService', () => {
 
       const createUserDto: CreateUserDto = {
         email: 'test@test.com',
-        password: 'password',
+        password: '',
         userName: 'Test User',
         isFromGoogle:false
       };
@@ -82,10 +82,10 @@ describe('UsersService', () => {
       expect(result).toEqual({ token: 'signed-token' });
     });
   });
-
+    //put password as password
   describe('loginUser', () => {
     it('should return user profile on successful login', async () => {
-      const loginUserDto: LoginUserDto = { email: 'test@test.com', password: 'password' };
+      const loginUserDto: LoginUserDto = { email: 'test@test.com', password: '' };
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       (compare as jest.Mock).mockResolvedValue(true);
 
@@ -94,9 +94,9 @@ describe('UsersService', () => {
       expect(mockUserRepository.findOne).toHaveBeenCalledWith(User, { where: { email: loginUserDto.email } });
       expect(result).toEqual({ token: 'signed-token' });
     });
-
+    //put password as wrongpassword
     it('should return null on failed login', async () => {
-      const loginUserDto: LoginUserDto = { email: 'test@test.com', password: 'wrongpassword' };
+      const loginUserDto: LoginUserDto = { email: 'test@test.com', password: '' };
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       (compare as jest.Mock).mockResolvedValue(false);
 
