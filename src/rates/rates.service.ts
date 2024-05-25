@@ -87,5 +87,26 @@ export class RatesService {
     const averageRate = totalScore / rates.length;
 
     return averageRate;
+    
   }
+
+
+    // Method to get the count of unique user IDs for a specific ad
+   
+    @ApiResponse({ status: 200, description: 'Unique user count retrieved successfully', type: Number })
+    async getUniqueUserCount(adId: number): Promise<number> {
+      // Find all rates for the specified ad
+      const rates = await this.dataSource.manager.find(Rate, { where: { adId } });
+  
+      // Check if there are any rates for the ad
+      if (!rates || rates.length === 0) {
+        throw new NotFoundException(`No rates found for ad with ID ${adId}`);
+      }
+  
+      // Calculate the count of unique user IDs
+      const uniqueUserIds = new Set(rates.map(rate => rate.userId));
+      const uniqueUserCount = uniqueUserIds.size;
+  
+      return uniqueUserCount;
+    }
 }

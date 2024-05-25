@@ -165,4 +165,33 @@ export class RatesController {
   async getRate(@Param('adId') adId: string, @Param('userId') userId: string) {
     return this.ratesService.getRate(+adId, +userId);
   }
+ // GET request to get the count of unique user IDs for a specific ad
+ @ApiOperation({ summary: 'Get the count of unique user IDs for a specific ad' })
+ @ApiParam({ name: 'adId', description: 'ID of the ad to get unique user count' })
+ @ApiResponse({
+   status: 200,
+   description: 'Unique user count retrieved successfully',
+   schema: {
+     example: {
+       adId: 1,
+       uniqueUserCount: 5
+     }
+   }
+ })
+ @ApiResponse({
+   status: 404,
+   description: 'Ad not found',
+   schema: {
+     example: {
+       statusCode: 404,
+       message: "No rates found for ad with ID 1",
+       error: "Not Found"
+     }
+   }
+ })
+ @Get(':adId/unique-users-count')
+ async getUniqueUserCount(@Param('adId') adId: string) {
+   return this.ratesService.getUniqueUserCount(+adId);
+ }
+  
 }
