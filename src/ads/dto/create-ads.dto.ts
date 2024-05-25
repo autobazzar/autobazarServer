@@ -17,7 +17,7 @@ export class CreateAdDto {
   @IsString() @IsNotEmpty()
   carName: string; // Name of the car in the ad
 
-  @IsString() @IsNotEmpty() @IsUrl()
+  @IsString() @IsNotEmpty()
   picsUrl: string; // URL of the pictures associated with the ad
 
   @IsOptional() @IsString()
@@ -38,7 +38,7 @@ export class CreateAdDto {
   @IsString() @IsNotEmpty()
   model: string; // Model of the car in the ad
 
-  @IsOptional() @IsString() @IsUrl()
+  @IsOptional() @IsString()
   videoUrl?: string; // URL of the video associated with the ad
 
   @IsString() @IsNotEmpty()
