@@ -98,14 +98,13 @@ export class UsersController {
     description: 'The data to update for the user.',
     type: UpdateUserDto,
     examples: {
-      valid: {
+     valid: {
         summary: 'Valid Request Example',
         value: {
-          oldPassword: 'oldPassword123',
-          password: 'newPassword123',
-          name: 'Updated Name',
-          phone: '9876543210',
-          address: '456 Elm St',
+          
+          name: 'Person',
+          phone: '7896543212',
+          address: '434 Arr St',
         },
       },
       missingOldPassword: {
