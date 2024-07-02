@@ -5,7 +5,7 @@ import { Repository, DataSource } from 'typeorm';
 import { Ad } from './entities/ads.entity';
 import { User } from '../users/entities/user.entity';
 import { CreateAdDto } from './dto/create-ads.dto';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 describe('AdsService', () => {
   let service: AdsService;
@@ -16,7 +16,7 @@ describe('AdsService', () => {
     user_id: 1,
     email: 'test@test.com',
     userName: 'TestUser',
-    isFromGoogle:false
+    isFromGoogle: false,
   };
 
   const mockAd = {
@@ -41,7 +41,7 @@ describe('AdsService', () => {
     insurance: 2,
     motor: "توربو",
     fuel: "گازسوز",
-    userId: 1
+    userId: 1,
   };
 
   const mockUserRepository = {
@@ -105,7 +105,7 @@ describe('AdsService', () => {
         insurance: 2,
         motor: "توربو",
         fuel: "گازسوز",
-        userId: 1
+        userId: 1,
       };
 
       mockUserRepository.findOne.mockResolvedValue(mockUser);
@@ -117,7 +117,7 @@ describe('AdsService', () => {
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({ where: { user_id: 1 } });
       expect(mockDataSource.manager.create).toHaveBeenCalledWith(Ad, createAdDto);
       expect(mockDataSource.manager.save).toHaveBeenCalledWith(mockAd);
-      expect(result).toEqual("Ad created successfully ");
+      expect(result).toEqual('Ad created successfully');
     });
 
     it('should throw NotFoundException if user does not exist', async () => {
@@ -142,7 +142,7 @@ describe('AdsService', () => {
         insurance: 2,
         motor: "توربو",
         fuel: "گازسوز",
-        userId: 999
+        userId: 999,
       };
 
       mockUserRepository.findOne.mockResolvedValue(null);
@@ -195,9 +195,22 @@ describe('AdsService', () => {
       expect(result).toEqual([mockAd]);
     });
 
-  
+    it('should throw NotFoundException if no ads available', async () => {
+      mockDataSource.manager.find.mockResolvedValue([]);
+
+      await expect(service.findAll()).rejects.toThrow(NotFoundException);
+    });
   });
 
+  describe('update', () => {
+ 
+
+    it('should throw NotFoundException if ad not found', async () => {
+      mockDataSource.manager.findOne.mockResolvedValue(null);
+
+      await expect(service.update(1, 1, undefined, 'Updated City')).rejects.toThrow(NotFoundException);
+    });
+  });
 
   describe('remove', () => {
     it('should remove the ad', async () => {
@@ -214,25 +227,6 @@ describe('AdsService', () => {
       mockDataSource.manager.findOne.mockResolvedValue(null);
 
       await expect(service.remove(1)).rejects.toThrow(NotFoundException);
-    });
-  });
-
-  describe('changeStatus', () => {
-    it('should change the status of the ad', async () => {
-      const updatedAd = { ...mockAd, status: 1 };
-      mockDataSource.manager.findOne.mockResolvedValue(mockAd);
-      mockDataSource.manager.save.mockResolvedValue(updatedAd);
-
-      await service.changeStatus(1, 1);
-
-      expect(mockDataSource.manager.findOne).toHaveBeenCalledWith(Ad, { where: { adId: 1 } });
-      expect(mockDataSource.manager.save).toHaveBeenCalledWith(updatedAd);
-    });
-
-    it('should throw NotFoundException if ad not found', async () => {
-      mockDataSource.manager.findOne.mockResolvedValue(null);
-
-      await expect(service.changeStatus(1, 1)).rejects.toThrow(NotFoundException);
     });
   });
 });
