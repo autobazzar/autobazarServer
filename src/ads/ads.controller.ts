@@ -1,5 +1,5 @@
 import { ApiTags, ApiParam, ApiResponse, ApiBody, ApiOperation, ApiExtraModels, getSchemaPath } from '@nestjs/swagger';
-import { Controller, Get, Post, Body, Param, Patch, Delete, Res, HttpStatus, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Res, HttpStatus, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { AdsService } from './ads.service';
 import { CreateAdDto, UpdateAdDto } from './dto/create-ads.dto';
 import { Response } from 'express';
@@ -295,48 +295,91 @@ export class AdsController {
    }
  }
 
-  // PATCH request to update an existing ad
-  @ApiOperation({ summary: 'Update an existing ad' })
-  @ApiParam({ name: 'id', description: 'Ad ID', type: 'number' })
-  @ApiBody({
-    type: UpdateAdDto,
-    examples: {
-      updateAd: {
-        summary: 'Example of an update ad',
-        value: {
-          technicalInfo: "اطلاعات فنی بروزرسانی شده درباره آگهی.",
-          address: "خیابان بروزرسانی شده 123",
-          mobileNum: "123-456-7890",
-          city: "شهر بروزرسانی شده",
-          carName: "هیوندای اکسنت",
-          picsUrl: "http://example.com/updatedpic.jpg",
-          additionalInfo: "اطلاعات اضافی بروزرسانی شده درباره آگهی.",
-          price: 11000,
-          date: "2024-07-17",
-          year: 2022,
-          status: 1,
-          model: "مدل بروزرسانی شده",
-          videoUrl: "http://example.com/updatedvideo.mp4",
-          brand: "برند بروزرسانی شده",
-          color: "سبز",
-          distance: 15000,
-          accidental: false,
-          userId: 789
-        }
-      }
-    }
-  })
-  @ApiResponse({ status: 200, description: 'Ad updated successfully', type: UpdateAdDto })
-  @ApiResponse({ status: 400, description: 'Failed to update ad' })
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateAdDto: UpdateAdDto, @Res() res: Response) {
-    try {
-      const result = await this.adsService.update(+id, updateAdDto); // Updating an existing ad using the provided DTO
-      res.status(HttpStatus.OK).send(result); // Sending success response with the updated ad
-    } catch (e) {
-      res.status(HttpStatus.BAD_REQUEST).send({ message: 'Failed to update ad' }); // Sending error response if update fails
+@ApiOperation({
+  summary: 'Update an existing ad',
+  description: 'Updates the details of an existing ad. The user making the request must be the owner of the ad. Pass the ad ID in the URL and the updated ad details in the request body.',
+})
+@ApiParam({ name: 'id', description: 'ID of the ad to be updated', type: 'number' })
+@ApiBody({
+  description: 'Updated details of the ad. Only provide fields that you want to update.',
+  type: 'object',
+  examples: {
+    updateAd: {
+      summary: 'Example of an update ad',
+      value: {
+        userId: 789,
+        technicalInfo: 'اطلاعات فنی بروزرسانی شده درباره آگهی.',
+        address: 'خیابان بروزرسانی شده 123',
+        mobileNum: '123-456-7890',
+        city: 'شهر بروزرسانی شده',
+        carName: 'هیوندای اکسنت',
+        picsUrl: 'http://example.com/updatedpic.jpg',
+        additionalInfo: 'اطلاعات اضافی بروزرسانی شده درباره آگهی.',
+        price: 11000,
+        date: '2024-07-17',
+        year: 2022,
+        status: 1,
+        model: 'مدل بروزرسانی شده',
+        videoUrl: 'http://example.com/updatedvideo.mp4',
+        brand: 'برند بروزرسانی شده',
+        color: 'سبز',
+        distance: 15000,
+        accidental: false,
+      },
+    },
+  },
+})
+@ApiResponse({ status: 200, description: 'Ad updated successfully' })
+@ApiResponse({ status: 400, description: 'Bad request. Invalid data or update failed' })
+@ApiResponse({ status: 403, description: 'User is not the owner of the ad' })
+@ApiResponse({ status: 404, description: 'Ad not found' })
+@Patch(':id')
+async update(
+  @Param('id') id: string,
+  @Body() body: {
+    userId: number,
+    technicalInfo?: string,
+    address?: string,
+    mobileNum?: string,
+    city?: string,
+    carName?: string,
+    picsUrl?: string,
+    additionalInfo?: string,
+    price?: number,
+    date?: string,
+    year?: number,
+    status?: number,
+    model?: string,
+    videoUrl?: string,
+    brand?: string,
+    color?: string,
+    distance?: number,
+    accidental?: boolean
+  },
+  @Res() res: Response
+) {
+  try {
+    // Extract userId from the request body
+    const { userId, technicalInfo,address, mobileNum ,city,carName,picsUrl,additionalInfo, price,date,year,status,model,videoUrl,brand,color,distance,accidental} = body;
+
+    // Call the service method to perform the update operation
+    const updatedAd = await this.adsService.update(+id, userId,technicalInfo,address, mobileNum,city,carName,picsUrl,additionalInfo, price,date,year,status,model,videoUrl,brand,color,distance,accidental);
+    
+    // Send a success response with the updated ad
+    res.status(HttpStatus.OK).json(updatedAd);
+  } catch (error) {
+    // Handle errors and send appropriate error response
+    if (error instanceof ForbiddenException) {
+      res.status(HttpStatus.FORBIDDEN).json({ message: error.message });
+    } else if (error instanceof NotFoundException) {
+      res.status(HttpStatus.NOT_FOUND).json({ message: error.message });
+    } else {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: 'Failed to update ad' });
     }
   }
+}
+
+
 
   // DELETE request to remove an existing ad
   @ApiOperation({ summary: 'Delete an existing ad' })
