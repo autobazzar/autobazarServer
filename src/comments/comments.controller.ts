@@ -66,39 +66,7 @@ export class CommentsController {
       }
     }
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Failed to create comment',
-    schema: {
-      example: {
-        statusCode: 400,
-        message: "Failed to create comment",
-        error: "Bad Request"
-      }
-    }
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'User or Ad not found',
-    schema: {
-      example: {
-        statusCode: 404,
-        message: "User not found",
-        error: "Not Found"
-      }
-    }
-  })
-  @ApiResponse({
-    status: 409,
-    description: 'Comment already exists for this user and ad',
-    schema: {
-      example: {
-        statusCode: 409,
-        message: "Comment already exists for this user and ad",
-        error: "Conflict"
-      }
-    }
-  })
+ 
   @Post()
   async create(@Body() createCommentDto: CreateCommentDto, @Res() res: Response) {
     try {
