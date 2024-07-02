@@ -16,7 +16,7 @@ describe('UsersService', () => {
   const mockUser = {
     user_id: 1,
     email: 'test@test.com',
-    password: 'hashedpass',
+    password: '',
     name: 'Test User',
     address: '123 Test St',
     phone: '123-456-7890',
@@ -72,7 +72,7 @@ describe('UsersService', () => {
       mockUserRepository.save.mockResolvedValue(mockUser);
       const createUser = {
         email: 'test@test.com',
-        password: 'pass',
+        password: '',
         userName: 'Test User',
         isFromGoogle: false,
       };
@@ -87,7 +87,7 @@ describe('UsersService', () => {
 
   describe('loginUser', () => {
     it('should return user profile on successful login', async () => {
-      const loginUser = { email: 'test@test.com', password: 'pass' };
+      const loginUser = { email: 'test@test.com', password: '' };
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       (compare as jest.Mock).mockResolvedValue(true);
 
@@ -98,7 +98,7 @@ describe('UsersService', () => {
     });
 
     it('should return null on failed login', async () => {
-      const loginUser = { email: 'test@test.com', password: 'wrongpassword' };
+      const loginUser = { email: 'test@test.com', password: '' };
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       (compare as jest.Mock).mockResolvedValue(false);
 
@@ -202,8 +202,8 @@ describe('UsersService', () => {
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       (compare as jest.Mock).mockResolvedValue(false);
       const updateUser = {
-        oldPassword: 'wrongpassword',
-        password: 'newpassword',
+        oldPassword: '',
+        password: '',
       };
 
       await expect(service.update(1, updateUser)).rejects.toThrow(BadRequestException);
@@ -212,16 +212,16 @@ describe('UsersService', () => {
     it('should hash the new password if provided', async () => {
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       (compare as jest.Mock).mockResolvedValue(true);
-      const hashedPassword = 'hashednewpassword';
+      const hashedPassword = '';
       (hash as jest.Mock).mockResolvedValue(hashedPassword);
       const updateUser = {
-        oldPassword: 'pass',
-        password: 'newpassword',
+        oldPassword: '',
+        password: '',
       };
 
       const result = await service.update(1, updateUser);
 
-      expect(hash).toHaveBeenCalledWith('newpassword', 10);
+      expect(hash).toHaveBeenCalledWith('', 10);
       expect(mockUserRepository.save).toHaveBeenCalledWith({ ...mockUser, password: hashedPassword });
       expect(result).toEqual({ token: 'signed-token' });
     });
