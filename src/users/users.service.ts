@@ -54,11 +54,17 @@ export class UsersService {
     return user; 
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.dataSource.manager.findOne(User,{ where: { user_id:id} } ); 
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return this.dataSource.manager.save(User,{ ...user, ...updateUserDto })
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.dataSource.manager.delete(User,{
+      user_id:id,
+    })
   }
 }
