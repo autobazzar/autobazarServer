@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, BadRequestException, NotFoundException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto, LoginUserDto, } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiNotFoundResponse, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
@@ -94,12 +94,63 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @ApiBody({
+    description: 'The data to update for the user.',
+    type: UpdateUserDto,
+    examples: {
+      valid: {
+        summary: 'Valid Request Example',
+        value: {
+          oldPassword: 'oldPassword123',
+          password: 'newPassword123',
+          name: 'Updated Name',
+          phone: '9876543210',
+          address: '456 Elm St',
+        },
+      },
+      missingOldPassword: {
+        summary: 'Request Example Without Password Change',
+        value: {
+          name: 'Updated Name',
+          phone: '9876543210',
+          address: '456 Elm St',
+        },
+      },
+    },
+  })
+  async update(
+    @Param('id') id: string,  // User ID from the route parameter.
+    @Body() updateUserDto: UpdateUserDto  // DTO containing user data for the update.
+  ) {
+    // Convert the ID from a string to a number and pass it to the update method.
+    try {
+      return await this.usersService.update(+id, updateUserDto);
+    } catch (error) {
+      // Add custom error messages for different types of exceptions.
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException('User not found. Please check the ID and try again.');
+      }
+      if (error instanceof BadRequestException) {
+        throw new BadRequestException('Old password is incorrect or invalid request data.');
+      }
+      // Re-throw the error if it is of a different type.
+      throw error;
+    }
   }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Get(':id/info')
+  @ApiOkResponse({ description: 'User info retrieved successfully' })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  async getUserInfo(@Param('id') id: string) {
+      // Convert the ID from a string to a number and pass it to the getUserInfo method.
+      return await this.usersService.getUserInfo(+id);
   }
+  
+  @Get(':id/isRegisteredByGoogle')
+  @ApiOkResponse({ description: 'User registration method retrieved successfully', type: String })
+  @ApiNotFoundResponse({ description: 'User not found' })
+  async isRegisteredByGoogle(@Param('id') id: string) {
+      // Convert the ID from a string to a number and pass it to the isRegisteredByGoogle method.
+      return await this.usersService.isRegisteredByGoogle(+id);
+  }
+ 
 }

@@ -25,9 +25,17 @@ export class User {
     @Column({ name: 'role', type: 'varchar', length: 256, nullable: true })
     role: string;
 
-
     @Column({ name: 'isBanned', type: 'boolean', default: false })
     isBanned: boolean;
+
+    @Column({ name: 'phone', type: 'varchar', length: 256, nullable: true })
+    phone: string;
+
+    @Column({ name: 'address', type: 'varchar', length: 256, nullable: true })
+    address: string;
+
+    @Column({ name: 'name', type: 'varchar', length: 256, nullable: true })
+    name: string;
 
 
 }
