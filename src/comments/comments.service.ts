@@ -89,8 +89,36 @@ export class CommentsService {
     // Return all comments  
     return Promise.all(result);
   }
+  
+ 
+  @ApiResponse({ status: 200, description: 'comment retrieved successfully', type: Comment })
+  @ApiResponse({ status: 404, description: 'comment not found' })
 
-
+  async findOne(id: number) {
+    const comment = await this.dataSource.manager.findOne(Comment, { where: { rateId: id } });
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
+    return comment;
+  }
+  
+  @ApiResponse({ status: 200, description: 'Comment removed successfully' })
+  @ApiResponse({ status: 404, description: 'Comment not found' })
+ 
+  async remove(rateId: number): Promise<void> {
+    try {
+      const comment = await this.findOne(rateId );
+      if (!comment) {
+        throw new NotFoundException('Comment not found');
+      }
+      await this.dataSource.manager.remove(Comment,comment);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw new NotFoundException('Comment not found');
+      }
+      throw error;
+    }
+  }
 }
 
 
