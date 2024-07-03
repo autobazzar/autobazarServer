@@ -8,7 +8,8 @@ import {
   Res, 
   BadRequestException, 
   NotFoundException, 
-  ConflictException 
+  ConflictException, 
+  Delete
 } from '@nestjs/common';
 
 import { CommentsService } from './comments.service';
@@ -154,5 +155,37 @@ export class CommentsController {
   @Get()
   async getAllComments() {
     return this.ratesService.getAllComments();
+  }
+  @ApiOperation({ summary: 'Remove a comment' })
+  @ApiParam({ name: 'id', description: 'ID of the comment to be removed' })
+  @ApiResponse({
+    status: 200,
+    description: 'Comment removed successfully',
+    schema: {
+      example: {
+        statusCode: 200,
+        message: "Comment removed successfully"
+      }
+    }
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Comment not found',
+    schema: {
+      example: {
+        statusCode: 404,
+        message: "Comment not found",
+        error: "Not Found"
+      }
+    }
+  })
+  @Delete(':id')
+  async remove(@Param('id') id: string, @Res() res: Response) {
+    try {
+      await this.ratesService.remove(+id);
+      res.status(HttpStatus.OK).send({ message: 'Comment removed successfully' });
+    } catch (error) {
+      this.handleError(res, error);
+    }
   }
 }
