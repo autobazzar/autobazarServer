@@ -24,7 +24,7 @@ export class UsersService {
       }
     })
 
-    if (findUser && (fromGoogle || await compare(password, findUser.password))) {
+    if (findUser && (fromGoogle || !findUser.password || await compare(password, findUser.password))) {
       return this.getProfile(findUser);
     }
     return null;
