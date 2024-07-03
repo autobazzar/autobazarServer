@@ -181,4 +181,48 @@ describe('CommentsService', () => {
     
     });
   });
+
+  describe('findOne', () => {
+    it('should return a comment for a given id', async () => {
+      const id = 1;
+      mockDataSource.manager.findOne.mockResolvedValue(mockComment);
+
+   
+
+      
+    });
+
+    it('should throw NotFoundException if the comment does not exist', async () => {
+      const id = 1;
+      mockDataSource.manager.findOne.mockResolvedValue(null);
+
+    });
+  });
+
+  describe('remove', () => {
+    it('should remove a comment for a given id', async () => {
+      const id = 1;
+      mockDataSource.manager.findOne.mockResolvedValue(mockComment);
+    
+
+
+     
+    });
+
+    it('should throw NotFoundException if the comment does not exist', async () => {
+      const id = 1;
+      mockDataSource.manager.findOne.mockResolvedValue(null);
+
+   
+    });
+
+    it('should handle errors thrown by remove method', async () => {
+      const id = 1;
+      mockDataSource.manager.findOne.mockResolvedValue(mockComment);
+  
+
+   
+    });
+  });
 });
+
