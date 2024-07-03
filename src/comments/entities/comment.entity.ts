@@ -9,6 +9,9 @@ export class Comment {
   @Column({ name: 'comment', type: 'varchar', length: 512, nullable: false }) // Define column for score, not nullable
   comment: string;
 
+  @Column({ name: 'score', type:'integer', nullable: true})
+  score: number;
+
   @Column({ name: 'user_id', type: 'integer', nullable: false }) // Define column for score, not nullable
   userId: number;
 

@@ -50,6 +50,13 @@ export class CommentsService {
 
     return "Comment created successfully";
   }
+  async getAllComments() {
+    const comments = await this.dataSource.manager.find(Comment);
+    const result = comments.map(async (item) => ({
+      ...item, user: await this.dataSource.manager.findOne(User, { where: { user_id: item.userId }, select: { userName: true } })
+    }))
+    return Promise.all(result);
+  }
 
   // Method to get the comment for a specific ad and user
   async getComment(adId: number, userId: number) {
@@ -68,15 +75,19 @@ export class CommentsService {
   @ApiResponse({ status: 200, description: 'All comments for the ad retrieved successfully', type: [Comment] })
   async getAllCommentsForAd(adId: number) {
     // Find all comments for the specified ad
-    const comments = await this.dataSource.manager.find(Comment,{where: { adId }  });
-
-    // Check if there are any comments for the ad
+    const comments = await this.dataSource.manager.find(Comment, { where: { adId } });
     if (comments.length === 0) {
       throw new NotFoundException(`No comments found for ad with ID ${adId}`);
     }
+    
+    const result = comments.map(async (item) => ({
+      ...item, user: await this.dataSource.manager.findOne(User, { where: { user_id: item.userId }, select: { userName: true } })
+    }))
+    // Check if there are any comments for the ad
+  
 
-    // Return all comments
-    return comments;
+    // Return all comments  
+    return Promise.all(result);
   }
 
 

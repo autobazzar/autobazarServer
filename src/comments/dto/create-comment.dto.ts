@@ -13,4 +13,6 @@ export class CreateCommentDto {
   @IsInt()
   @IsNotEmpty() // Ensure adId is provided
   adId: number;
+
+  score?: number;
 }

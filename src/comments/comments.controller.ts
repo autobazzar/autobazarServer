@@ -108,8 +108,8 @@ export class CommentsController {
     description: 'All comments for the ad retrieved successfully',
     schema: {
       example: [
-        { rateId: 1, comment: "Great ad!", userId: 123, adId: 1 },
-        { rateId: 2, comment: "Not bad", userId: 124, adId: 1 }
+        { rateId: 1, comment: "Great ad!", userId: 123, adId: 1 ,user:{name:"hesam"} },
+        { rateId: 2, comment: "Not bad", userId: 124, adId: 1 ,user:{name:"ali"}}
       ]
     }
   })
@@ -127,5 +127,32 @@ export class CommentsController {
   @Get(':adId/comments')
   async getAllCommentsForAd(@Param('adId') adId: string) {
     return this.ratesService.getAllCommentsForAd(+adId);
+  }
+  @ApiOperation({ summary: 'Get all comments for a specific ad' })
+  @ApiParam({ name: 'adId', description: 'ID of the ad' })
+  @ApiResponse({
+    status: 200,
+    description: 'All comments for the ad retrieved successfully',
+    schema: {
+      example: [
+        { rateId: 1, comment: "Great ad!", userId: 123, adId: 1 ,user:{name:"hesam"} },
+        { rateId: 2, comment: "Not bad", userId: 124, adId: 1 ,user:{name:"ali"}}
+      ]
+    }
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No comments found for the ad',
+    schema: {
+      example: {
+        statusCode: 404,
+        message: "No comments found for ad with ID 1",
+        error: "Not Found"
+      }
+    }
+  })
+  @Get()
+  async getAllComments() {
+    return this.ratesService.getAllComments();
   }
 }
